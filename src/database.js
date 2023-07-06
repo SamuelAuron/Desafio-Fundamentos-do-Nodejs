@@ -58,10 +58,9 @@ export class Database {
       
       this.#database[table][rowIndex].title = (!data.title) ? this.#database[table][rowIndex].title : data.title
       
-      
       this.#database[table][rowIndex].description = (!data.description) ? this.#database[table][rowIndex].description : data.description
       
-
+      this.#database[table][rowIndex].updated_at = data.updateDate
       this.#persist()
     }
   }

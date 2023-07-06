@@ -28,7 +28,6 @@ export const routes = [
     handler: (req, res) => {
       const { title, description } = req.body
       const date = moment().format("DD/MM/YYYY");
-      console.log(date);
       const task = {
         id: randomUUID(),
         title,
@@ -49,10 +48,12 @@ export const routes = [
     handler: (req, res) => {
       const { id } = req.params;
       const { title, description } = req.body
+      const updateDate = moment().format("DD/MM/YYYY");
 
       database.update('tasks', id, {
         title,
         description, 
+        updateDate,
       })
 
       return res.writeHead(204).end()
