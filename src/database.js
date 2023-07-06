@@ -62,7 +62,16 @@ export class Database {
       
       this.#database[table][rowIndex].updated_at = data.updateDate
       this.#persist()
+    } 
+  }
+
+  completed(table, id, data) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+    
+    if (rowIndex > -1) {
+      this.#database[table][rowIndex].completed_at = (!this.#database[table][rowIndex].completed_at) ? data.completedDate : null
     }
+    this.#persist()
   }
 
   delete(table, id) {
