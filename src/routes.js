@@ -28,6 +28,19 @@ export const routes = [
     handler: (req, res) => {
       const { title, description } = req.body
       const date = moment().format("DD/MM/YYYY");
+
+      if (!title) {
+        return res.writeHead(400).end(
+          JSON.stringify({ message: 'title is required' }),
+        )
+      }
+
+      if (!description) {
+        return res.writeHead(400).end(
+          JSON.stringify({message: 'description is required' })
+        )
+      }
+
       const task = {
         id: randomUUID(),
         title,
@@ -49,11 +62,38 @@ export const routes = [
       const { id } = req.params;
       const { title, description } = req.body
       const updateDate = moment().format("DD/MM/YYYY");
+      
+      if (!title || !description) {
+        return res.writeHead(400).end(
+          JSON.stringify({ message: 'title or description are required' })
+        )
+      }
+
+      const [task] = database.select('tasks', { id })
+
+      if (!task) {
+        return res.writeHead(404).end()
+      }
 
       database.update('tasks', id, {
         title,
         description, 
         updateDate,
+      })
+
+      return res.writeHead(204).end()
+    }
+  },
+  {
+    method: 'PATCH',
+    path: buildRoutePath('/tasks/:id/complete'),
+    handler: (req, res) => {
+      
+      const { id } = req.params;
+      const completedDate = moment().format("DD/MM/YYYY");
+
+      database.completed('tasks', id, {
+        completedDate,
       })
 
       return res.writeHead(204).end()
