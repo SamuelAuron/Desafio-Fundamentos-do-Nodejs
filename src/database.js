@@ -38,7 +38,7 @@ export class Database {
       data = data.filter(row => {
         return Object.entries(search).some(([ key, value]) => {
           const rowValue = row[key].replace(/\s/g, '')
-          console.log(rowValue)
+
           if (rowValue === value){
             return row[key]
           }
@@ -49,6 +49,15 @@ export class Database {
     }
 
     return data
+  }
+
+  delete(table, id) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+    if (rowIndex > -1) {
+      this.#database[table].splice(rowIndex, 1)
+      this.#persist()
+    }
   }
   
 
