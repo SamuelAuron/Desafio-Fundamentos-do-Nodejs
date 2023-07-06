@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { Database } from './database.js'
 import moment from 'moment/moment.js';
-
+import { buildRoutePath } from './utils/build-routh-path.js';
 
 const database = new Database();
 moment.locale('pt-BR');
@@ -9,16 +9,22 @@ moment.locale('pt-BR');
 export const routes = [
   {
     method: 'GET',
-    path: '/tasks',
+    path: buildRoutePath('/tasks'),
     handler: (req, res) => {
-      const tasks = database.select('tasks')
+      const { search } = req.query
 
-      return res.end(JSON.stringify(tasks))
-    }
+      const tasks = database.select('tasks', search ? {
+        title: search,
+        description: search
+      } : null)
+
+      console.log(tasks)
+      return res.end(JSON.stringify(tasks));
+    },
   },
   {
     method: 'POST',
-    path: '/tasks',
+    path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body
       const date = moment().format("DD/MM/YYYY");
@@ -31,7 +37,7 @@ export const routes = [
         created_at : date,
         updated_at: date,
       }
-      console.log(new Date())
+    
       database.insert('tasks', task)
 
       return res.writeHead(201).end()
